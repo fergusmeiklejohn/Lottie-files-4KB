@@ -3,6 +3,19 @@ import random
 import os
 
 
+def check_file_size(file_paths):
+    report = []
+    for file_path in file_paths:
+        with open(file_path, "r") as f:
+            content = f.read()
+        num_chars = len(content)
+        status = "Pass" if num_chars < 4000 else "Fail"
+        report.append(
+            {"file_name": file_path, "num_chars": num_chars, "status": status}
+        )
+    return report
+
+
 def generate_color():
     """Generate a random color."""
     return [round(random.random(), 2) for _ in range(3)] + [1]  # RGBA
@@ -142,6 +155,17 @@ def main():
     # Save the records to a JSON
     with open("augmentation_records.json", "w") as f:
         json.dump(all_records, f)
+
+        # Generate the report for the original files
+    original_report = check_file_size(file_paths)
+    with open("original_report.json", "w") as f:
+        json.dump(original_report, f)
+
+    # Generate the report for the augmented files
+    augmented_file_paths = [record["augmented_file_name"] for record in all_records]
+    augmented_report = check_file_size(augmented_file_paths)
+    with open("augmented_report.json", "w") as f:
+        json.dump(augmented_report, f)
 
 
 if __name__ == "__main__":
