@@ -131,10 +131,11 @@ def augment_lottie(file_path, output_dir):
 
 
 def main():
+    original_dir = "original_files"
     output_dir = "augmented_files"
     os.makedirs(output_dir, exist_ok=True)
 
-    file_paths = [
+    file_names = [
         "Blue line shape on white background made of a star, a circle, and a rectangle, erasing itself counterclockwise.json",
         "Irregular blue dashed line on grey background drawing itself on from left to right.json",
         "Irregularly shaped white line on a black background erasing itself clockwise.json",
@@ -146,6 +147,7 @@ def main():
         "White line square on a black background drawing itself on from it's top left corner.json",
         "White line with triangle arrow head on a black background drawing on in an irregular path from left to right.json",
     ]
+    file_paths = [os.path.join(original_dir, file_name) for file_name in file_names]
     all_records = []
 
     for file_path in file_paths:
