@@ -16,6 +16,29 @@ def check_file_size(file_paths):
     return report
 
 
+def get_color_name(rgb):
+    colors = {
+        "Red": [1, 0, 0],
+        "Green": [0, 1, 0],
+        "Blue": [0, 0, 1],
+        "White": [1, 1, 1],
+        "Black": [0, 0, 0],
+        "Yellow": [1, 1, 0],
+        "Cyan": [0, 1, 1],
+        "Magenta": [1, 0, 1],
+    }
+
+    min_distance = float("inf")
+    color_name = "Unknown"
+    for name, color_rgb in colors.items():
+        distance = sum((c - r) ** 2 for c, r in zip(color_rgb, rgb))
+        if distance < min_distance:
+            min_distance = distance
+            color_name = name
+
+    return color_name
+
+
 def generate_color():
     """Generate a random color."""
     return [round(random.random(), 2) for _ in range(3)] + [1]  # RGBA
@@ -75,6 +98,11 @@ def augment_lottie(file_path, output_dir):
                     if "w" in shape:
                         original_width = shape["w"]["k"]
                         new_width = modify_stroke_width(original_width)
+                        width_label = (
+                            "a_little_wider"
+                            if new_width > original_width
+                            else "a_little_narrower"
+                        )
                         shape["w"]["k"] = new_width
 
     # Modify Duration
@@ -98,16 +126,25 @@ def augment_lottie(file_path, output_dir):
         # Save the augmented Lottie JSON
     augmented_file_name = os.path.splitext(os.path.basename(file_path))[0] + "_"
     modifications = []
+    original_file_name = os.path.splitext(os.path.basename(file_path))[0]
     if new_color is not None:
-        modifications.append("color")
+        color_name = get_color_name(new_color)
+        original_file_name = original_file_name.replace("White", color_name)
     if new_width is not None:
-        modifications.append("stroke_width")
+        modifications.append(width_label)
     if new_duration is not None:
-        modifications.append("duration")
+        duration_label = (
+            "a_little_faster" if new_duration < original_duration else "a_little_slower"
+        )
+        modifications.append(duration_label)
     if new_opacity is not None:
-        modifications.append("opacity")
-    augmented_file_name += "_" + "_".join(modifications) + ".json"
+        opacity_label = (
+            "less_opaque" if new_opacity < original_opacity else "more_opaque"
+        )
+        modifications.append(opacity_label)
+    augmented_file_name = original_file_name + "_" + "_".join(modifications) + ".json"
     augmented_file_path = os.path.join(output_dir, augmented_file_name)
+
     with open(augmented_file_path, "w") as f:
         json.dump(modified_data, f, separators=(",", ":"), ensure_ascii=False)
 
@@ -143,7 +180,6 @@ def main():
         "Three vertical black lines of different heights on a green background growing from zero to full height so they all finish at the same time.json",
         "White line on black background growing and shrinking horizontally.json",
         "White line square on a black background drawing itself on from it's top left corner.json",
-        "White line with triangle arrow head on a black background drawing on in an irregular path from left to right.json",
     ]
     file_paths = [os.path.join(original_dir, file_name) for file_name in file_names]
     all_records = []
