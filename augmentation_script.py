@@ -5,24 +5,24 @@ import os
 
 def generate_color():
     """Generate a random color."""
-    return [random.random(), random.random(), random.random(), 1]  # RGBA
+    return [round(random.random(), 2) for _ in range(3)] + [1]  # RGBA
 
 
 def modify_stroke_width(width):
     """Modify the stroke width by ±10%."""
-    factor = random.uniform(0.9, 1.1)
-    return width * factor
+    factor = round(random.uniform(0.9, 1.1), 2)
+    return round(width * factor, 2)
 
 
 def modify_duration(duration):
     """Modify the duration by ±5%."""
-    factor = random.uniform(0.95, 1.05)
-    return duration * factor
+    factor = round(random.uniform(0.95, 1.05), 2)
+    return round(duration * factor, 2)
 
 
 def modify_opacity(opacity):
     """Modify the opacity between 70% to 100%."""
-    return random.uniform(0.7, 1.0)
+    return round(random.uniform(0.7, 1.0), 2)
 
 
 def augment_lottie(file_path, output_dir):
@@ -107,7 +107,7 @@ def augment_lottie(file_path, output_dir):
         "modifications": {
             "color": new_color,
             "stroke_width": new_width,
-            "duration_factor": new_duration / original_duration
+            "duration_factor": round(new_duration / original_duration, 2)
             if new_duration is not None
             else None,
             "opacity": new_opacity,
