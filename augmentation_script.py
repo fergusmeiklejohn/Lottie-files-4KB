@@ -96,9 +96,7 @@ def augment_lottie(file_path, output_dir):
         modified_data["layers"][0]["ks"]["o"]["k"] = new_opacity * 100
 
         # Save the augmented Lottie JSON
-    augmented_file_name = (
-        os.path.splitext(os.path.basename(file_path))[0] + "_augmented"
-    )
+    augmented_file_name = os.path.splitext(os.path.basename(file_path))[0] + "_"
     modifications = []
     if new_color is not None:
         modifications.append("color")
