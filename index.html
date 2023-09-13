@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <title>Lottie Player Web Component Demo</title>
+    <style>
+        body {
+            background-color: #bcab8f;
+        }
+
+        #lotties {
+          display: grid;
+          grid-template-columns: repeat(20, 0.5fr);
+          grid-gap: 20px;
+        }
+  
+        lottie-player {
+          width: 100%;
+          height: 100%;
+        }
+      </style>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@0.3.0/dist/lottie-player.js"></script>
+  </head>
+  <body>
+    <ui id="lotties" class="view-tiles">
+    </ui>
+  </body>
+  <script>
+    function displayfile() {
+        const files = document.getElementById("files");
+        console.log('hello')
+        fetch('/result-GPT4prompt')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(html, "text/html");
+                const filesUl = htmlDoc.querySelector('#files');
+                const fileLinks = filesUl.querySelectorAll('li a');
+                const arr = Array.from(fileLinks).map(link => link.href);
+                arr.shift();
+                return arr;
+            })
+            .then(links => {
+                links.forEach(link => {
+                    const player = document.createElement('lottie-player');
+                    player.autoplay = true;
+                    player.loop = true;
+                    player.src = link;
+
+                    const li = document.createElement('li');
+                    li.appendChild(player);
+
+                    const p = document.createElement('p');
+                    p.textContent = link;
+                    li.appendChild(p);
+                    document.getElementById('lotties').appendChild(li);
+                });
+            })
+            .catch(error => console.error(error));
+    }
+    document.addEventListener("DOMContentLoaded", displayfile);
+
+  </script>
+</html>
