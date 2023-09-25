@@ -8,4 +8,7 @@ node_modules/
 raw_data/
 result-openAI0907/
 result-GPT4prompt/
-data_preparation/openai/out/
+data_preparation/openai/out_0913/
+data_preparation/openai/out_0920/
+data_preparation/openai/ft_0913_0920_combined.jsonl
+data_preparation/openai/ft_0920.jsonl

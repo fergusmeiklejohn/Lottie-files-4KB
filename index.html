@@ -55,7 +55,8 @@
                     li.appendChild(player);
 
                     const p = document.createElement('p');
-                    p.textContent = link;
+                    p.textContent = link.split('/').pop();
+                    p.style.fontFamily = 'Helvetica';
                     li.appendChild(p);
                     document.getElementById('lotties').appendChild(li);
                 });
